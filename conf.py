@@ -20,7 +20,7 @@ class Config:
                 if current_system != '':
                     conf[current_system] = current_conf
                 current_conf = {}
-                current_system = self.clean_string(line)
+                current_system = self.clean_label_string(line)
 
             if line.startswith('#') or line.find('=') == -1:
                 continue
@@ -30,10 +30,15 @@ class Config:
             try:
                 current_conf[conf_line[0]] = int(conf_line[1])
             except ValueError:
-                if conf_line[1].find(',') != -1:
-                    parts = conf_line[1].split(',')
-                    current_conf[conf_line[0]] = (int(parts[0]), int(parts[1]), int(parts[2]))
+                print("ValueError on " + conf_line[1])
+                if conf_line[1].startswith('('):
+                    print('Tuple')
+                    current_conf[conf_line[0]] = self.get_color_tuple(conf_line[1])
+                elif conf_line[1].startswith('['):
+                    print('List')
+                    current_conf[conf_line[0]] = self.get_command_list(conf_line[1])
                 else:
+                    print('String')
                     current_conf[conf_line[0]] = conf_line[1]
         conf[current_system] = current_conf
         return conf
@@ -83,7 +88,23 @@ class Config:
         return new_conf
             
     def clean_string(self, str):
+        return re.sub('[\r\n]', '', str)
+        
+    def clean_label_string(self, str):
         return re.sub('[\[\]\r\n]', '', str)
+        
+    def get_color_tuple(self, str):
+        str = str.replace('(', '').replace(')', '')
+        parts = str.split(',')
+        tuple = (int(parts[0]), int(parts[1]), int(parts[2]))
+        print(tuple)
+        return tuple
+    
+    def get_command_list(self, str):
+        str = str.replace('[', '').replace(']', '')
+        parts = str.split(',')
+        print(parts)
+        return parts
         
     def get_conf_for_dir(self, dir):
         for key in self.conf:

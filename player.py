@@ -18,3 +18,9 @@ class Player():
         
     def stop(self):
         pygame.mixer.music.stop()
+        
+    def pause(self):
+        pygame.mixer.music.pause()
+        
+    def resume(self):
+        pygame.mixer.music.play()

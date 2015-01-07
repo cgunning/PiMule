@@ -46,8 +46,10 @@ if __name__ == "__main__":
                     elif selected_menu_item.action.action_type == 'execute':
                         pygame.display.quit()
                         p = subprocess.Popen(selected_menu_item.action.action)
+                        player.pause()
                         p.wait()
-                        exit(menu)
+                        #exit(menu)
+                        player.resume()
                         pygame.display.init()
                         pygame.mouse.set_visible(False)
                         screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN) #0,6671875 and 0,(6) of HD resoultion

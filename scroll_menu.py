@@ -5,6 +5,14 @@ from conf import Config
 
 class Menu:
     
+    def set_rom_in_command(self, command, rom):
+        for i in range(len(command)):
+            if command[i].find('%ROM%') == -1:
+                continue
+                
+            command[i] = command[i].replace('%ROM%', '\'' + rom + '\'')
+        return command
+    
     # Load a directory into the menu
     def load_dir(self):
         # Only add a "../" option if we're not in the root directory
@@ -19,7 +27,7 @@ class Menu:
                 folder_list.append(Menu.MenuItem(item + '/', Menu.Action(os.path.abspath(os.path.join(self.dir, item)), 'navigate')))
             elif os.path.isfile(os.path.join(self.dir, item)):
                 # Create a menu item that has an execute action for the file
-                file_list.append(Menu.MenuItem(item, Menu.Action(['/bin/bash', '/opt/retropie/supplementary/runcommand/runcommand.sh', '4', '/opt/retropie/emulators/RetroArch/installdir/bin/retroarch -L /opt/retropie/emulatorcores/picodrive/picodrive_libretro.so --config /opt/retropie/configs/all/retroarch.cfg --appendconfig /opt/retropie/configs/mastersystem/retroarch.cfg \'' + os.path.abspath(os.path.join(self.dir, item)) + '\''], 'execute')))
+                file_list.append(Menu.MenuItem(item, Menu.Action(self.set_rom_in_command(self.emulator_command, os.path.join(self.dir, item)), 'execute')))
         
         # Sorts by the text of the menu item
         folder_list.sort(key=lambda x: x.text)
@@ -79,7 +87,7 @@ class Menu:
         if 'emulator_command' in conf:
             self.emulator_command = conf['emulator_command']
         else:
-            self.emulator_location = ''
+            self.emulator_command = ''
         self.bg = pygame.image.load(conf['background_image'])
         self.font = pygame.font.Font(conf['font'], conf['font_size'])
         self.font_color = conf['font_color']
