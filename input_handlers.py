@@ -2,6 +2,7 @@ BTN_UP = 0
 
 class JoystickInputHandler:
     
+    # Testar lite git då
     # I'm thinking that the configuration after being loaded through load_conf_for_joystick would
     # look something like this. It would be similar in KeyboardInputHandler but without the grouping
     # into axis, btn and so on.
