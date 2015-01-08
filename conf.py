@@ -4,7 +4,7 @@ import copy
 
 class Config:
     def __init__(self):
-        f = open('data/menu.conf')
+        f = open('/home/pi/PiMule/data/menu.conf')
         conf = self.load_conf(f.readlines())
         conf = self.fix_dirs(conf)
         conf = self.fix_missing(conf)

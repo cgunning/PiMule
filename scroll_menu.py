@@ -91,7 +91,7 @@ class Menu:
             self.emulator_command = conf['emulator_command']
         else:
             self.emulator_command = ''
-        self.bg = pygame.image.load(conf['background_image'])
+        self.bg = pygame.image.load(conf['background_image']).convert() 
         self.font = pygame.font.Font(conf['font'], conf['font_size'])
         self.font_color = conf['font_color']
         self.font_size = conf['font_size']
