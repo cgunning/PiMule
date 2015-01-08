@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import sys
 import pygame
 from pygame.locals import *
@@ -17,12 +19,12 @@ def exit(menu):
     sys.exit()
     
 if __name__ == "__main__":
-    c = Config()
-    p = Player()
+    conf = Config()
+    player = Player()
     screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN) #0,6671875 and 0,(6) of HD resoultion
     
-    menu = Menu(c, p)
-    menu.set_dir(c.get_conf_for_label('root')['dir'])
+    menu = Menu(conf, player)
+    menu.set_dir(conf.get_conf_for_label('root')['dir'])
     menu.render(screen, full_update = True)
     
     
@@ -44,11 +46,10 @@ if __name__ == "__main__":
                         menu.set_dir(menu.menu_items[menu.selected_menu_item].action.action)
                         menu.render(screen, full_update = True)
                     elif selected_menu_item.action.action_type == 'execute':
-                        pygame.display.quit()
-                        p = subprocess.Popen(selected_menu_item.action.action)
                         player.pause()
-                        p.wait()
-                        #exit(menu)
+                        pygame.display.quit()
+                        proc = subprocess.Popen(selected_menu_item.action.action)
+                        proc.wait()
                         player.resume()
                         pygame.display.init()
                         pygame.mouse.set_visible(False)
@@ -56,12 +57,7 @@ if __name__ == "__main__":
                         menu.render(screen, full_update = True)
                 if event.key == K_ESCAPE:
                     exit(menu)
-                
-                # And then draw the result of our action
-                pygame.display.flip()
             elif event.type == QUIT:
                 exit(menu)
-            else:
-                count = 0
         pygame.time.wait(8)
        

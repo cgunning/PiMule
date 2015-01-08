@@ -30,15 +30,11 @@ class Config:
             try:
                 current_conf[conf_line[0]] = int(conf_line[1])
             except ValueError:
-                print("ValueError on " + conf_line[1])
                 if conf_line[1].startswith('('):
-                    print('Tuple')
                     current_conf[conf_line[0]] = self.get_color_tuple(conf_line[1])
                 elif conf_line[1].startswith('['):
-                    print('List')
                     current_conf[conf_line[0]] = self.get_command_list(conf_line[1])
                 else:
-                    print('String')
                     current_conf[conf_line[0]] = conf_line[1]
         conf[current_system] = current_conf
         return conf
@@ -97,13 +93,11 @@ class Config:
         str = str.replace('(', '').replace(')', '')
         parts = str.split(',')
         tuple = (int(parts[0]), int(parts[1]), int(parts[2]))
-        print(tuple)
         return tuple
     
     def get_command_list(self, str):
         str = str.replace('[', '').replace(']', '')
         parts = str.split(',')
-        print(parts)
         return parts
         
     def get_conf_for_dir(self, dir):

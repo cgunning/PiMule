@@ -2,16 +2,19 @@ import pygame
 from pygame.locals import *
 import os
 from conf import Config
+import copy
 
 class Menu:
     
     def set_rom_in_command(self, command, rom):
+        new_command = copy.deepcopy(command)
         for i in range(len(command)):
             if command[i].find('%ROM%') == -1:
                 continue
                 
-            command[i] = command[i].replace('%ROM%', '\'' + rom + '\'')
-        return command
+            new_command[i] = command[i].replace('%ROM%', '' + rom + '')
+        
+        return new_command
     
     # Load a directory into the menu
     def load_dir(self):

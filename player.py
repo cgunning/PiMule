@@ -4,6 +4,7 @@ import time
 class Player():
     
     current_file = ''
+    current_pos = 0.0
     
     def __init__(self):
         pygame.mixer.init()
@@ -23,4 +24,5 @@ class Player():
         pygame.mixer.music.pause()
         
     def resume(self):
-        pygame.mixer.music.play()
+        pygame.mixer.music.load(self.current_file)
+        pygame.mixer.music.play(-1, 0.0) # Start at 0.0 and repeat an infinite amount of times
