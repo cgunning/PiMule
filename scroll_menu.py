@@ -16,6 +16,11 @@ class Menu:
         
         return new_command
     
+    def is_dir_empty(self, dir):
+        for dir, dirnames, filenames in os.walk(dir):
+            if len(filenames) > 0:
+                return False
+        return True
     # Load a directory into the menu
     def load_dir(self):
         # Only add a "../" option if we're not in the root directory
@@ -27,7 +32,8 @@ class Menu:
         for item in os.listdir(self.dir):
             if os.path.isdir(os.path.join(self.dir, item)):
                 # Create a menu item that has a navigation action for the directory
-                folder_list.append(Menu.MenuItem(item + '/', Menu.Action(os.path.abspath(os.path.join(self.dir, item)), 'navigate')))
+                if not self.is_dir_empty(os.path.abspath(os.path.join(self.dir, item))):
+                    folder_list.append(Menu.MenuItem(item + '/', Menu.Action(os.path.abspath(os.path.join(self.dir, item)), 'navigate')))
             elif os.path.isfile(os.path.join(self.dir, item)):
                 # Create a menu item that has an execute action for the file
                 file_list.append(Menu.MenuItem(item, Menu.Action(self.set_rom_in_command(self.emulator_command, os.path.join(self.dir, item)), 'execute')))
