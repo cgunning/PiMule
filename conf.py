@@ -19,6 +19,7 @@ class Config:
             if(line.startswith('[')):
                 if current_system != '':
                     conf[current_system] = current_conf
+                    conf[current_system]['inherited'] = False
                 current_conf = {}
                 current_system = self.clean_label_string(line)
 
@@ -37,6 +38,7 @@ class Config:
                 else:
                     current_conf[conf_line[0]] = conf_line[1]
         conf[current_system] = current_conf
+        conf[current_system]['inherited'] = False
         return conf
 
     def fix_dirs(self, conf):
@@ -44,6 +46,8 @@ class Config:
         for key in conf:
             if key == 'root':
                 continue
+            
+            print(conf[key])
             conf[key]['dir'] = os.path.join(root_dir, conf[key]['dir'])
         return conf
             
@@ -106,7 +110,9 @@ class Config:
                 return self.conf[key]
         
         ret = copy.deepcopy(self.get_conf_for_dir(os.path.abspath(os.path.dirname(dir))))
-        ret['dir'] = dir
+        if ret['dir'] != dir:
+            ret['dir'] = dir
+            ret['inherited'] = True
         return ret
     
     def get_conf_for_label(self, label):

@@ -33,7 +33,11 @@ class Menu:
             if os.path.isdir(os.path.join(self.dir, item)):
                 # Create a menu item that has a navigation action for the directory
                 if not self.is_dir_empty(os.path.abspath(os.path.join(self.dir, item))):
-                    folder_list.append(Menu.MenuItem(item + '/', Menu.Action(os.path.abspath(os.path.join(self.dir, item)), 'navigate')))
+                    dir_conf = self.conf.get_conf_for_dir(os.path.join(self.dir, item))
+                    dir_name = item
+                    if not dir_conf['inherited']:
+                        dir_name = dir_conf['name']
+                    folder_list.append(Menu.MenuItem(dir_name + '/', Menu.Action(os.path.abspath(os.path.join(self.dir, item)), 'navigate')))
             elif os.path.isfile(os.path.join(self.dir, item)):
                 # Create a menu item that has an execute action for the file
                 file_list.append(Menu.MenuItem(item, Menu.Action(self.set_rom_in_command(self.emulator_command, os.path.join(self.dir, item)), 'execute')))
