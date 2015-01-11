@@ -101,7 +101,10 @@ class Config:
     
     def get_command_list(self, str):
         str = str.replace('[', '').replace(']', '')
+        if str == '':
+            return []
         parts = str.split(',')
+	
         return parts
         
     def get_conf_for_dir(self, dir):

@@ -12,7 +12,7 @@ class Menu:
             if command[i].find('%ROM%') == -1:
                 continue
                 
-            new_command[i] = command[i].replace('%ROM%', '' + rom + '')
+            new_command[i] = command[i].replace('%ROM%', rom)
         
         return new_command
     
@@ -26,21 +26,24 @@ class Menu:
         # Only add a "../" option if we're not in the root directory
         if os.path.abspath(self.dir) != os.path.abspath(self.root_dir):
             self.add_menu_item(Menu.MenuItem('../', Menu.Action(os.path.abspath(os.path.dirname(self.dir)), 'navigate')))
-            
+            self.back_action = Menu.Action(os.path.abspath(os.path.dirname(self.dir)), 'navigate')
+        
         folder_list = []
         file_list = []
+        
         for item in os.listdir(self.dir):
             if os.path.isdir(os.path.join(self.dir, item)):
                 # Create a menu item that has a navigation action for the directory
                 if not self.is_dir_empty(os.path.abspath(os.path.join(self.dir, item))):
                     dir_conf = self.conf.get_conf_for_dir(os.path.join(self.dir, item))
                     dir_name = item
-                    if not dir_conf['inherited']:
+                    if not dir_conf['inherited'] and 'name' in dir_conf:
                         dir_name = dir_conf['name']
                     folder_list.append(Menu.MenuItem(dir_name + '/', Menu.Action(os.path.abspath(os.path.join(self.dir, item)), 'navigate')))
             elif os.path.isfile(os.path.join(self.dir, item)):
                 # Create a menu item that has an execute action for the file
-                file_list.append(Menu.MenuItem(item, Menu.Action(self.set_rom_in_command(self.emulator_command, os.path.join(self.dir, item)), 'execute')))
+                if item[item.rfind('.'):].lower() in self.rom_suffixes or len(self.rom_suffixes) == 0:
+                    file_list.append(Menu.MenuItem(item, Menu.Action(self.set_rom_in_command(self.emulator_command, os.path.join(self.dir, item)), 'execute')))
         
         # Sorts by the text of the menu item
         folder_list.sort(key=lambda x: x.text)
@@ -101,6 +104,10 @@ class Menu:
             self.emulator_command = conf['emulator_command']
         else:
             self.emulator_command = ''
+        if 'rom_suffixes' in conf:
+            self.rom_suffixes = conf['rom_suffixes']
+        else:
+            self.rom_suffixes = []
         self.bg = pygame.image.load(conf['background_image']).convert() 
         self.font = pygame.font.Font(conf['font'], conf['font_size'])
         self.font_color = conf['font_color']
